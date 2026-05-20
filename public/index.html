@@ -1,0 +1,2135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>EnglishVibe - 沉浸式英语口语练习</title>
+<style>
+/* ============================================================
+   CSS Reset & Base
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f5f5f7;
+  --card-bg: rgba(255,255,255,0.78);
+  --card-border: rgba(255,255,255,0.5);
+  --card-shadow: 0 8px 40px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.03);
+  --text-primary: #1d1d1f;
+  --text-secondary: #86868b;
+  --text-tertiary: #aeaeb2;
+  --accent: #0071e3;
+  --accent-hover: #0077ed;
+  --accent-pressed: #006edb;
+  --green: #34c759;
+  --orange: #ff9500;
+  --red: #ff3b30;
+  --purple: #af52de;
+  --teal: #5ac8fa;
+  --pink: #ff2d55;
+  --badge-bg: rgba(0,113,227,0.10);
+  --badge-text: #0071e3;
+  --control-bg: rgba(120,120,128,0.08);
+  --control-hover: rgba(120,120,128,0.16);
+  --divider: rgba(60,60,67,0.08);
+  --toast-bg: rgba(0,0,0,0.85);
+  --warning-bg: #fff3cd;
+  --warning-border: #ffc107;
+  --warning-text: #856404;
+  --shadow-lg: 0 12px 56px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --font-sf: -apple-system, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --transition: 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1c1e;
+    --card-bg: rgba(44,44,46,0.85);
+    --card-border: rgba(255,255,255,0.08);
+    --card-shadow: 0 8px 40px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.15);
+    --text-primary: #f5f5f7;
+    --text-secondary: #a1a1a6;
+    --text-tertiary: #636366;
+    --accent: #0a84ff;
+    --accent-hover: #409cff;
+    --accent-pressed: #0066d9;
+    --badge-bg: rgba(10,132,255,0.15);
+    --badge-text: #0a84ff;
+    --control-bg: rgba(120,120,128,0.15);
+    --control-hover: rgba(120,120,128,0.25);
+    --divider: rgba(255,255,255,0.08);
+    --toast-bg: rgba(255,255,255,0.88);
+    --warning-bg: #2d2210;
+    --warning-border: #ff9500;
+    --warning-text: #ffd60a;
+    --shadow-lg: 0 12px 56px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.25);
+  }
+}
+
+html { font-size: 16px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+body {
+  font-family: var(--font-sf);
+  background: var(--bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  transition: background var(--transition), color var(--transition);
+  line-height: 1.5;
+}
+
+/* ============================================================
+   App Container
+   ============================================================ */
+.app-container {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   Header
+   ============================================================ */
+.app-header {
+  text-align: center;
+  padding: 20px 0 24px;
+  animation: fadeDown 0.6s ease-out;
+}
+
+.app-header .logo-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #0071e3 0%, #40a9ff 50%, #5ac8fa 100%);
+  box-shadow: 0 4px 16px rgba(0,113,227,0.3);
+  margin-bottom: 12px;
+  transition: transform var(--transition);
+}
+
+.app-header .logo-icon:hover { transform: scale(1.05); }
+
+.app-header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.app-header .subtitle {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  font-weight: 400;
+  margin-top: 4px;
+  letter-spacing: 0.02em;
+}
+
+/* ============================================================
+   Toast
+   ============================================================ */
+.toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-80px);
+  background: var(--toast-bg);
+  color: var(--text-primary);
+  padding: 10px 22px;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.1);
+  white-space: nowrap;
+  max-width: 80vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ============================================================
+   Voice Warning
+   ============================================================ */
+.voice-warning {
+  background: var(--warning-bg);
+  border: 1px solid var(--warning-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  color: var(--warning-text);
+  font-size: 0.8rem;
+  font-weight: 500;
+  animation: fadeDown 0.3s ease-out;
+}
+
+.voice-warning.visible { display: flex; }
+
+.voice-warning svg { flex-shrink: 0; width: 18px; height: 18px; }
+
+/* ============================================================
+   Main Card (Glassmorphism)
+   ============================================================ */
+.main-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--card-shadow);
+  padding: 32px 28px 28px;
+  transition: all var(--transition);
+  animation: fadeUp 0.6s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.main-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+}
+
+/* ============================================================
+   Type Badge
+   ============================================================ */
+.type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  border-radius: 100px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.type-badge.word {
+  background: rgba(0,113,227,0.12);
+  color: #0071e3;
+}
+
+.type-badge.phrase {
+  background: rgba(175,82,222,0.12);
+  color: #af52de;
+}
+
+@media (prefers-color-scheme: dark) {
+  .type-badge.word { background: rgba(10,132,255,0.18); color: #40a9ff; }
+  .type-badge.phrase { background: rgba(191,90,242,0.18); color: #bf5af2; }
+}
+
+/* ============================================================
+   Category Label
+   ============================================================ */
+.category-label {
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  margin-bottom: 8px;
+  letter-spacing: 0.04em;
+}
+
+/* ============================================================
+   Favorite Button
+   ============================================================ */
+.fav-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: var(--control-bg);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  color: var(--text-tertiary);
+}
+
+.fav-btn:hover { background: var(--control-hover); transform: scale(1.1); }
+.fav-btn:active { transform: scale(0.92); }
+.fav-btn.active { color: var(--red); }
+.fav-btn.active svg { fill: var(--red); }
+.fav-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; transition: fill 0.25s; }
+.fav-btn.active svg { fill: var(--red); }
+
+/* ============================================================
+   Word Display
+   ============================================================ */
+.word-display {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 8px 0 6px;
+  padding-right: 36px;
+  letter-spacing: -0.02em;
+  word-break: break-word;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.word-display.fade-out {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.word-display.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================================
+   Translation Panel
+   ============================================================ */
+.translation-panel {
+  margin: 12px 0 0;
+  padding: 14px 18px;
+  background: var(--control-bg);
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  transition: all 0.35s ease;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  padding: 0 18px;
+}
+
+.translation-panel.visible {
+  max-height: 200px;
+  opacity: 1;
+  padding: 14px 18px;
+  margin-top: 12px;
+}
+
+.translation-panel .trans-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  margin-bottom: 4px;
+}
+
+.translation-panel .trans-content {
+  font-weight: 500;
+}
+
+/* ============================================================
+   Play Button (with spinning ring)
+   ============================================================ */
+.play-btn {
+  display: block;
+  margin: 16px auto 6px;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, var(--accent) 0%, #5ac8fa 100%);
+  box-shadow: 0 6px 24px rgba(0,113,227,0.35);
+  color: #fff;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.play-btn:hover {
+  transform: scale(1.06);
+  box-shadow: 0 8px 32px rgba(0,113,227,0.45);
+}
+
+.play-btn:active { transform: scale(0.94); }
+
+.play-btn svg {
+  width: 32px;
+  height: 32px;
+  fill: currentColor;
+  position: relative;
+  z-index: 2;
+}
+
+/* Spinning Ring */
+.play-btn .ring {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2.5px solid transparent;
+  border-top-color: rgba(255,255,255,0.6);
+  border-right-color: rgba(255,255,255,0.2);
+  animation: spin 0.8s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.play-btn.playing .ring { opacity: 1; }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Pause icon for playing state */
+.play-btn.playing .play-icon { display: none; }
+.play-btn.playing .pause-icon { display: block; }
+.play-btn .play-icon { display: block; }
+.play-btn .pause-icon { display: none; }
+
+/* ============================================================
+   Controls Row (prev/skip/replay)
+   ============================================================ */
+.controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.ctrl-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--control-bg);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.ctrl-btn:hover { background: var(--control-hover); color: var(--text-primary); transform: scale(1.05); }
+.ctrl-btn:active { transform: scale(0.92); }
+.ctrl-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ============================================================
+   Bottom Controls (Segmented Control, Slider, Toggle, Select)
+   ============================================================ */
+.bottom-controls {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-top: 20px;
+  border-top: 1px solid var(--divider);
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.control-group .label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 36px;
+  letter-spacing: 0.02em;
+}
+
+/* Segmented Control */
+.segmented-control {
+  display: flex;
+  background: var(--control-bg);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  flex: 1;
+}
+
+.segmented-control .seg-btn {
+  flex: 1;
+  padding: 7px 8px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: center;
+}
+
+.segmented-control .seg-btn.active {
+  background: var(--card-bg);
+  color: var(--text-primary);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  font-weight: 600;
+}
+
+.segmented-control .seg-btn:hover:not(.active) { color: var(--text-primary); }
+
+/* Speed Slider */
+.speed-slider-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.speed-slider-group .label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 36px;
+}
+
+.speed-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--control-bg);
+  outline: none;
+  transition: background 0.2s;
+}
+
+.speed-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  transition: transform 0.2s;
+  border: 2px solid var(--card-bg);
+}
+
+.speed-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+
+.speed-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--card-bg);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+.speed-value {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent);
+  min-width: 32px;
+  text-align: right;
+}
+
+/* iOS-style Toggle */
+.toggle-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toggle-group .label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 36px;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 48px;
+  height: 30px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.toggle-switch .track {
+  position: absolute;
+  inset: 0;
+  background: #e9e9ea;
+  border-radius: 15px;
+  transition: background 0.3s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .toggle-switch .track { background: #39393d; }
+}
+
+.toggle-switch .thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.toggle-switch input:checked + .track {
+  background: var(--green);
+}
+
+.toggle-switch input:checked + .track + .thumb,
+.toggle-switch input:checked ~ .thumb {
+  transform: translateX(18px);
+}
+
+/* Voice Select */
+.voice-select-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.voice-select-group .label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 36px;
+}
+
+.voice-select {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--divider);
+  background: var(--control-bg);
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  font-family: var(--font-sf);
+  cursor: pointer;
+  transition: border-color 0.2s;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2386868b' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+.voice-select:focus { border-color: var(--accent); }
+.voice-select option { background: var(--card-bg); color: var(--text-primary); }
+
+/* ============================================================
+   Stats Row
+   ============================================================ */
+.stats-row {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 20px;
+  padding: 14px 0 0;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-item .stat-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.stat-item .stat-label {
+  font-size: 0.68rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+/* ============================================================
+   Footer Tip
+   ============================================================ */
+.footer-tip {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  animation: fadeUp 0.8s ease-out 0.4s both;
+}
+
+.footer-tip kbd {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 5px;
+  background: var(--control-bg);
+  border: 1px solid var(--divider);
+  font-family: var(--font-sf);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ============================================================
+   Animations
+   ============================================================ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   Responsive (Mobile)
+   ============================================================ */
+@media (max-width: 480px) {
+  body { padding: 12px; align-items: stretch; }
+  .app-container { max-width: 100%; }
+  .app-header { padding: 12px 0 16px; }
+  .app-header .logo-icon { width: 44px; height: 44px; }
+  .app-header h1 { font-size: 1.35rem; }
+  .app-header .subtitle { font-size: 0.7rem; }
+  .main-card { padding: 24px 18px 20px; border-radius: var(--radius-lg); }
+  .word-display { font-size: 1.6rem; }
+  .play-btn { width: 62px; height: 62px; }
+  .play-btn svg { width: 28px; height: 28px; }
+  .fav-btn { top: 14px; right: 14px; width: 32px; height: 32px; }
+  .fav-btn svg { width: 16px; height: 16px; }
+  .translation-panel { font-size: 0.85rem; }
+  .bottom-controls { gap: 14px; margin-top: 18px; padding-top: 16px; }
+  .ctrl-btn { width: 40px; height: 40px; }
+  .ctrl-btn svg { width: 18px; height: 18px; }
+  .stats-row { gap: 24px; }
+  .segmented-control .seg-btn { font-size: 0.72rem; padding: 6px 4px; }
+  .toast { font-size: 0.78rem; padding: 8px 16px; top: 16px; }
+}
+
+/* ============================================================
+   Accessibility
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================================
+   Loading State
+   ============================================================ */
+.loading-dots::after {
+  content: '';
+  animation: dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+  0%   { content: ''; }
+  25%  { content: '.'; }
+  50%  { content: '..'; }
+  75%  { content: '...'; }
+  100% { content: ''; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast" role="alert" aria-live="polite"></div>
+
+  <!-- Voice Warning -->
+  <div id="voiceWarning" class="voice-warning" role="alert">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+    <span id="voiceWarningText">语音系统加载中，部分功能可能暂时不可用...</span>
+  </div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="logo-icon" aria-hidden="true">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <path d="M4 18C4 14 7 10 11 8L13 7L15 8C19 10 22 14 22 18" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M14 7V22" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        <path d="M10 22H18" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="14" cy="14" r="3" fill="rgba(255,255,255,0.4)"/>
+      </svg>
+    </div>
+    <h1>EnglishVibe</h1>
+    <p class="subtitle">沉浸式英语口语练习 · 美式发音 · 可选中文播报</p>
+  </header>
+
+  <!-- Main Card -->
+  <div class="main-card" role="main">
+
+    <!-- Type Badge -->
+    <div id="typeBadge" class="type-badge word">
+      <span id="typeBadgeIcon">&#9679;</span>
+      <span id="typeBadgeText">单词</span>
+    </div>
+
+    <!-- Category Label -->
+    <div id="categoryLabel" class="category-label">词汇</div>
+
+    <!-- Favorite Button -->
+    <button id="favBtn" class="fav-btn" aria-label="收藏" title="收藏">
+      <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
+    </button>
+
+    <!-- Word Display -->
+    <div id="wordDisplay" class="word-display">点击播放开始</div>
+
+    <!-- Play Button -->
+    <button id="playBtn" class="play-btn" aria-label="播放/暂停">
+      <div class="ring"></div>
+      <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M8 5v14l11-7z"/>
+      </svg>
+      <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor">
+        <rect x="6" y="4" width="4" height="16" rx="1"/>
+        <rect x="14" y="4" width="4" height="16" rx="1"/>
+      </svg>
+    </button>
+
+    <!-- Translation Panel -->
+    <div id="translationPanel" class="translation-panel">
+      <div class="trans-label">中文释义</div>
+      <div id="transContent" class="trans-content"></div>
+    </div>
+
+    <!-- Controls Row (prev/skip/replay) -->
+    <div class="controls-row">
+      <button id="prevBtn" class="ctrl-btn" aria-label="上一个" title="上一个 (←)">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button id="skipBtn" class="ctrl-btn" aria-label="下一个" title="下一个 (→)">
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button id="replayBtn" class="ctrl-btn" aria-label="重播" title="重播 (R)">
+        <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Bottom Controls -->
+  <div class="bottom-controls">
+
+    <!-- Segmented Control: 单词 / 对话 / 混合 -->
+    <div class="control-group">
+      <span class="label">模式</span>
+      <div id="segmentedControl" class="segmented-control" role="tablist">
+        <button class="seg-btn active" role="tab" aria-selected="true" data-category="words">单词</button>
+        <button class="seg-btn" role="tab" aria-selected="false" data-category="phrases">对话</button>
+        <button class="seg-btn" role="tab" aria-selected="false" data-category="all">混合</button>
+      </div>
+    </div>
+
+    <!-- Speed Slider -->
+    <div class="speed-slider-group">
+      <span class="label">语速</span>
+      <input type="range" id="speedSlider" class="speed-slider" min="0.3" max="1.8" step="0.1" value="0.8" aria-label="语速">
+      <span id="speedValue" class="speed-value">0.8x</span>
+    </div>
+
+    <!-- Chinese Toggle -->
+    <div class="toggle-group">
+      <span class="label">中文</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="chineseToggle" aria-label="中文播报">
+        <div class="track"></div>
+        <div class="thumb"></div>
+      </label>
+    </div>
+
+    <!-- Voice Select -->
+    <div class="voice-select-group">
+      <span class="label">音色</span>
+      <select id="voiceSelect" class="voice-select" aria-label="选择语音">
+        <option value="auto">自动</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Stats Row -->
+  <div class="stats-row">
+    <div class="stat-item">
+      <div id="practiceCount" class="stat-value">0</div>
+      <div class="stat-label">练习次数</div>
+    </div>
+    <div class="stat-item">
+      <div id="favCount" class="stat-value">0</div>
+      <div class="stat-label">收藏</div>
+    </div>
+  </div>
+
+  <!-- Footer Tip -->
+  <p class="footer-tip">
+    <kbd>Space</kbd> 播放/暂停 &nbsp;·&nbsp; <kbd>&larr;</kbd><kbd>&rarr;</kbd> 切换 &nbsp;·&nbsp; <kbd>R</kbd> 重播
+  </p>
+
+</div>
+
+<script>
+// ================================================================
+// DATA: Word Bank (250+ words)
+// ================================================================
+const wordBank = [
+  // ---- Common Verbs ----
+  { text: "achieve", cat: "常用动词", translations: ["实现", "达成", "取得"] },
+  { text: "admit", cat: "常用动词", translations: ["承认", "准许进入", "接纳"] },
+  { text: "afford", cat: "常用动词", translations: ["负担得起", "提供", "给予"] },
+  { text: "agree", cat: "常用动词", translations: ["同意", "赞成", "一致"] },
+  { text: "allow", cat: "常用动词", translations: ["允许", "准许", "容许"] },
+  { text: "appear", cat: "常用动词", translations: ["出现", "显得", "似乎"] },
+  { text: "arrange", cat: "常用动词", translations: ["安排", "整理", "布置"] },
+  { text: "believe", cat: "常用动词", translations: ["相信", "认为", "信任"] },
+  { text: "belong", cat: "常用动词", translations: ["属于", "归属", "是...的一员"] },
+  { text: "blame", cat: "常用动词", translations: ["责备", "归咎于", "指责"] },
+  { text: "borrow", cat: "常用动词", translations: ["借入", "借用", "借贷"] },
+  { text: "bother", cat: "常用动词", translations: ["打扰", "烦扰", "操心"] },
+  { text: "celebrate", cat: "常用动词", translations: ["庆祝", "颂扬", "赞美"] },
+  { text: "choose", cat: "常用动词", translations: ["选择", "挑选", "决定"] },
+  { text: "collect", cat: "常用动词", translations: ["收集", "收藏", "收取"] },
+  { text: "compare", cat: "常用动词", translations: ["比较", "对比", "比喻"] },
+  { text: "compete", cat: "常用动词", translations: ["竞争", "比赛", "对抗"] },
+  { text: "complain", cat: "常用动词", translations: ["抱怨", "投诉", "发牢骚"] },
+  { text: "confess", cat: "常用动词", translations: ["承认", "坦白", "忏悔"] },
+  { text: "connect", cat: "常用动词", translations: ["连接", "联系", "接通"] },
+  { text: "control", cat: "常用动词", translations: ["控制", "管理", "支配"] },
+  { text: "convince", cat: "常用动词", translations: ["说服", "使确信", "使信服"] },
+  { text: "decide", cat: "常用动词", translations: ["决定", "下决心", "判决"] },
+  { text: "demand", cat: "常用动词", translations: ["要求", "需求", "查询"] },
+  { text: "depend", cat: "常用动词", translations: ["依赖", "依靠", "取决于"] },
+  { text: "describe", cat: "常用动词", translations: ["描述", "形容", "描绘"] },
+  { text: "deserve", cat: "常用动词", translations: ["值得", "应得", "配得上"] },
+  { text: "disappear", cat: "常用动词", translations: ["消失", "不见", "绝迹"] },
+  { text: "discover", cat: "常用动词", translations: ["发现", "发觉", "找到"] },
+  { text: "discuss", cat: "常用动词", translations: ["讨论", "商讨", "论述"] },
+  { text: "encourage", cat: "常用动词", translations: ["鼓励", "激励", "促进"] },
+  { text: "enjoy", cat: "常用动词", translations: ["享受", "欣赏", "喜爱"] },
+  { text: "escape", cat: "常用动词", translations: ["逃脱", "逃避", "逃离"] },
+  { text: "expect", cat: "常用动词", translations: ["期待", "预期", "期望"] },
+  { text: "explain", cat: "常用动词", translations: ["解释", "说明", "阐明"] },
+  { text: "explore", cat: "常用动词", translations: ["探索", "探险", "探讨"] },
+  { text: "express", cat: "常用动词", translations: ["表达", "表示", "表述"] },
+  { text: "fail", cat: "常用动词", translations: ["失败", "不及格", "未能"] },
+  { text: "follow", cat: "常用动词", translations: ["跟随", "遵循", "理解"] },
+  { text: "forgive", cat: "常用动词", translations: ["原谅", "宽恕", "饶恕"] },
+  { text: "gather", cat: "常用动词", translations: ["聚集", "收集", "采集"] },
+  { text: "happen", cat: "常用动词", translations: ["发生", "碰巧", "出现"] },
+  { text: "imagine", cat: "常用动词", translations: ["想象", "设想", "猜想"] },
+  { text: "improve", cat: "常用动词", translations: ["改善", "提高", "进步"] },
+  { text: "include", cat: "常用动词", translations: ["包括", "包含", "列入"] },
+  { text: "influence", cat: "常用动词", translations: ["影响", "感化", "左右"] },
+  { text: "inform", cat: "常用动词", translations: ["通知", "告知", "报告"] },
+  { text: "inspire", cat: "常用动词", translations: ["启发", "激励", "鼓舞"] },
+  { text: "intend", cat: "常用动词", translations: ["打算", "想要", "计划"] },
+  { text: "introduce", cat: "常用动词", translations: ["介绍", "引进", "引入"] },
+  { text: "invent", cat: "常用动词", translations: ["发明", "创造", "编造"] },
+  { text: "invite", cat: "常用动词", translations: ["邀请", "聘请", "请求"] },
+  { text: "involve", cat: "常用动词", translations: ["涉及", "包含", "参与"] },
+  { text: "join", cat: "常用动词", translations: ["加入", "连接", "参加"] },
+  { text: "judge", cat: "常用动词", translations: ["判断", "评判", "审判"] },
+  { text: "justify", cat: "常用动词", translations: ["证明...有理", "辩护", "辩解"] },
+  { text: "mention", cat: "常用动词", translations: ["提到", "提及", "说起"] },
+  { text: "notice", cat: "常用动词", translations: ["注意到", "察觉", "关注"] },
+  { text: "obey", cat: "常用动词", translations: ["服从", "遵守", "听从"] },
+  { text: "observe", cat: "常用动词", translations: ["观察", "遵守", "评述"] },
+  { text: "offer", cat: "常用动词", translations: ["提供", "提议", "出价"] },
+  { text: "operate", cat: "常用动词", translations: ["操作", "经营", "运转"] },
+  { text: "organize", cat: "常用动词", translations: ["组织", "安排", "整理"] },
+  { text: "overcome", cat: "常用动词", translations: ["克服", "战胜", "克服困难"] },
+  { text: "permit", cat: "常用动词", translations: ["允许", "许可", "准许"] },
+  { text: "persuade", cat: "常用动词", translations: ["说服", "劝说", "使信服"] },
+  { text: "possess", cat: "常用动词", translations: ["拥有", "具有", "支配"] },
+  { text: "predict", cat: "常用动词", translations: ["预测", "预言", "预报"] },
+  { text: "preserve", cat: "常用动词", translations: ["保存", "保护", "维持"] },
+  { text: "proceed", cat: "常用动词", translations: ["继续进行", "前进", "着手"] },
+  { text: "protest", cat: "常用动词", translations: ["抗议", "反对", "声明"] },
+  { text: "publish", cat: "常用动词", translations: ["出版", "发表", "发布"] },
+  { text: "question", cat: "常用动词", translations: ["质疑", "询问", "审问"] },
+  { text: "realize", cat: "常用动词", translations: ["意识到", "实现", "认清"] },
+  { text: "receive", cat: "常用动词", translations: ["接收", "收到", "接待"] },
+  { text: "recover", cat: "常用动词", translations: ["恢复", "康复", "找回"] },
+  { text: "reduce", cat: "常用动词", translations: ["减少", "降低", "缩小"] },
+  { text: "refer", cat: "常用动词", translations: ["参考", "提及", "提交"] },
+  { text: "regret", cat: "常用动词", translations: ["后悔", "遗憾", "惋惜"] },
+  { text: "relate", cat: "常用动词", translations: ["关联", "叙述", "涉及"] },
+  { text: "relax", cat: "常用动词", translations: ["放松", "休息", "松懈"] },
+  { text: "rely", cat: "常用动词", translations: ["依赖", "依靠", "信赖"] },
+  { text: "remove", cat: "常用动词", translations: ["移除", "删除", "消除"] },
+  { text: "represent", cat: "常用动词", translations: ["代表", "表示", "象征"] },
+  { text: "resign", cat: "常用动词", translations: ["辞职", "放弃", "辞去"] },
+  { text: "resolve", cat: "常用动词", translations: ["解决", "决心", "决议"] },
+  { text: "respond", cat: "常用动词", translations: ["回应", "响应", "回答"] },
+  { text: "restore", cat: "常用动词", translations: ["恢复", "修复", "归还"] },
+  { text: "retain", cat: "常用动词", translations: ["保留", "保持", "记住"] },
+  { text: "reveal", cat: "常用动词", translations: ["揭示", "透露", "显示"] },
+  { text: "review", cat: "常用动词", translations: ["回顾", "复习", "评审"] },
+  { text: "revise", cat: "常用动词", translations: ["修订", "修改", "复习"] },
+  { text: "satisfy", cat: "常用动词", translations: ["满足", "使满意", "符合"] },
+  { text: "select", cat: "常用动词", translations: ["选择", "挑选", "选定"] },
+  { text: "settle", cat: "常用动词", translations: ["解决", "定居", "安顿"] },
+  { text: "submit", cat: "常用动词", translations: ["提交", "服从", "递交"] },
+  { text: "suffer", cat: "常用动词", translations: ["遭受", "承受", "忍受"] },
+  { text: "supply", cat: "常用动词", translations: ["供应", "提供", "补给"] },
+  { text: "support", cat: "常用动词", translations: ["支持", "支援", "拥护"] },
+  { text: "suspect", cat: "常用动词", translations: ["怀疑", "猜疑", "不信任"] },
+  { text: "threaten", cat: "常用动词", translations: ["威胁", "恐吓", "预示"] },
+  { text: "transfer", cat: "常用动词", translations: ["转移", "转让", "调任"] },
+  { text: "treat", cat: "常用动词", translations: ["对待", "治疗", "请客"] },
+  { text: "trust", cat: "常用动词", translations: ["信任", "信赖", "委托"] },
+  { text: "undertake", cat: "常用动词", translations: ["承担", "从事", "着手做"] },
+  { text: "urge", cat: "常用动词", translations: ["催促", "力劝", "推进"] },
+  { text: "utilize", cat: "常用动词", translations: ["利用", "使用", "运用"] },
+  { text: "volunteer", cat: "常用动词", translations: ["自愿", "志愿", "主动"] },
+  { text: "withdraw", cat: "常用动词", translations: ["撤回", "退出", "提取"] },
+  { text: "witness", cat: "常用动词", translations: ["目击", "见证", "证人"] },
+
+  // ---- 日常高频 ----
+  { text: "absolutely", cat: "日常高频", translations: ["绝对地", "完全地", "当然"] },
+  { text: "actually", cat: "日常高频", translations: ["实际上", "事实上", "确实"] },
+  { text: "basically", cat: "日常高频", translations: ["基本上", "大体上", "主要地"] },
+  { text: "definitely", cat: "日常高频", translations: [" definitely", "肯定地", "明确地"] },
+  { text: "especially", cat: "日常高频", translations: ["尤其", "特别", "格外"] },
+  { text: "eventually", cat: "日常高频", translations: ["最终", "终于", "最后"] },
+  { text: "exactly", cat: "日常高频", translations: ["确切地", "正好", "恰好"] },
+  { text: "frequently", cat: "日常高频", translations: ["频繁地", "经常", "屡次"] },
+  { text: "immediately", cat: "日常高频", translations: ["立即", "马上", "即刻"] },
+  { text: "literally", cat: "日常高频", translations: ["字面上", "确实", "简直"] },
+  { text: "meanwhile", cat: "日常高频", translations: ["与此同时", "在此期间", "另一方面"] },
+  { text: "moreover", cat: "日常高频", translations: ["此外", "而且", "再者"] },
+  { text: "nevertheless", cat: "日常高频", translations: ["然而", "不过", "尽管如此"] },
+  { text: "obviously", cat: "日常高频", translations: ["显然地", "明显地", "显而易见"] },
+  { text: "otherwise", cat: "日常高频", translations: ["否则", "不然", "另外"] },
+  { text: "probably", cat: "日常高频", translations: ["很可能", "大概", "也许"] },
+  { text: "therefore", cat: "日常高频", translations: ["因此", "所以", "为此"] },
+  { text: "unfortunately", cat: "日常高频", translations: ["不幸地", "遗憾的是", "可惜"] },
+  { text: "appreciate", cat: "日常高频", translations: ["感激", "欣赏", "领会"] },
+  { text: "consider", cat: "日常高频", translations: ["考虑", "认为", "顾及"] },
+  { text: "recommend", cat: "日常高频", translations: ["推荐", "建议", "举荐"] },
+  { text: "suggest", cat: "日常高频", translations: ["建议", "暗示", "表明"] },
+  { text: "apologize", cat: "日常高频", translations: ["道歉", "致歉", "认错"] },
+  { text: "argue", cat: "日常高频", translations: ["争论", "辩论", "争吵"] },
+  { text: "assist", cat: "日常高频", translations: ["协助", "帮助", "辅助"] },
+  { text: "attempt", cat: "日常高频", translations: ["尝试", "试图", "企图"] },
+  { text: "attend", cat: "日常高频", translations: ["参加", "出席", "上(学)"] },
+  { text: "avoid", cat: "日常高频", translations: ["避免", "回避", "避开"] },
+  { text: "confuse", cat: "日常高频", translations: ["混淆", "迷惑", "困惑"] },
+  { text: "delay", cat: "日常高频", translations: ["延迟", "推迟", "拖延"] },
+  { text: "pretend", cat: "日常高频", translations: ["假装", "伪装", "装作"] },
+  { text: "prevent", cat: "日常高频", translations: ["防止", "预防", "阻止"] },
+  { text: "remind", cat: "日常高频", translations: ["提醒", "使想起", "唤起"] },
+  { text: "replace", cat: "日常高频", translations: ["替换", "取代", "放回"] },
+  { text: "require", cat: "日常高频", translations: ["需要", "要求", "规定"] },
+  { text: "respect", cat: "日常高频", translations: ["尊重", "尊敬", "敬重"] },
+  { text: "wonder", cat: "日常高频", translations: ["想知道", "疑惑", "惊奇"] },
+  { text: "worry", cat: "日常高频", translations: ["担心", "忧虑", "烦恼"] },
+  { text: "adapt", cat: "日常高频", translations: ["适应", "改编", "调整"] },
+  { text: "adopt", cat: "日常高频", translations: ["采纳", "收养", "采用"] },
+  { text: "announce", cat: "日常高频", translations: ["宣布", "通告", "公布"] },
+  { text: "apply", cat: "日常高频", translations: ["申请", "应用", "适用"] },
+  { text: "balance", cat: "日常高频", translations: ["平衡", "权衡", "均衡"] },
+  { text: "cancel", cat: "日常高频", translations: ["取消", "撤销", "删除"] },
+  { text: "concern", cat: "日常高频", translations: ["关心", "涉及", "担忧"] },
+  { text: "confirm", cat: "日常高频", translations: ["确认", "证实", "批准"] },
+  { text: "create", cat: "日常高频", translations: ["创造", "创建", "创作"] },
+  { text: "deliver", cat: "日常高频", translations: ["递送", "交付", "发表"] },
+  { text: "ensure", cat: "日常高频", translations: ["确保", "保证", "担保"] },
+  { text: "estimate", cat: "日常高频", translations: ["估计", "估算", "评价"] },
+  { text: "evaluate", cat: "日常高频", translations: ["评估", "评价", "估值"] },
+  { text: "expand", cat: "日常高频", translations: ["扩展", "扩大", "膨胀"] },
+  { text: "generate", cat: "日常高频", translations: ["产生", "生成", "引起"] },
+  { text: "identify", cat: "日常高频", translations: ["识别", "确认", "鉴定"] },
+  { text: "implement", cat: "日常高频", translations: ["实施", "执行", "落实"] },
+  { text: "invest", cat: "日常高频", translations: ["投资", "投入", "授予"] },
+  { text: "maintain", cat: "日常高频", translations: ["维持", "保养", "主张"] },
+  { text: "motivate", cat: "日常高频", translations: ["激励", "激发", "促使"] },
+  { text: "obtain", cat: "日常高频", translations: ["获得", "得到", "取得"] },
+  { text: "oppose", cat: "日常高频", translations: ["反对", "抵制", "对抗"] },
+  { text: "prepare", cat: "日常高频", translations: ["准备", "预备", "筹备"] },
+  { text: "produce", cat: "日常高频", translations: ["生产", "产生", "制造"] },
+  { text: "pursue", cat: "日常高频", translations: ["追求", "追捕", "继续"] },
+  { text: "reflect", cat: "日常高频", translations: ["反映", "反射", "思考"] },
+  { text: "reject", cat: "日常高频", translations: ["拒绝", "排斥", "驳回"] },
+  { text: "release", cat: "日常高频", translations: ["释放", "发布", "发行"] },
+  { text: "survive", cat: "日常高频", translations: ["幸存", "存活", "生存"] },
+
+  // ---- 常用形容词 ----
+  { text: "amazing", cat: "常用形容词", translations: ["令人惊叹的", "惊人的", "了不起的"] },
+  { text: "appropriate", cat: "常用形容词", translations: ["适当的", "恰当的", "合适的"] },
+  { text: "available", cat: "常用形容词", translations: ["可用的", "有空的", "有效的"] },
+  { text: "beneficial", cat: "常用形容词", translations: ["有益的", "有利的", "有助的"] },
+  { text: "challenging", cat: "常用形容词", translations: ["具有挑战性的", "考验能力的", "艰巨的"] },
+  { text: "comfortable", cat: "常用形容词", translations: ["舒适的", "舒服的", "自在的"] },
+  { text: "confident", cat: "常用形容词", translations: ["自信的", "确信的", "有信心的"] },
+  { text: "convenient", cat: "常用形容词", translations: ["方便的", "便利的", "近便的"] },
+  { text: "curious", cat: "常用形容词", translations: ["好奇的", "求知欲强的", "好打听的"] },
+  { text: "efficient", cat: "常用形容词", translations: ["高效的", "效率高的", "快捷的"] },
+  { text: "embarrassed", cat: "常用形容词", translations: ["尴尬的", "难为情的", "困窘的"] },
+  { text: "enthusiastic", cat: "常用形容词", translations: ["热情的", "热心的", "热衷的"] },
+  { text: "essential", cat: "常用形容词", translations: ["必要的", "基本的", "本质的"] },
+  { text: "fantastic", cat: "常用形容词", translations: ["极好的", "美妙的", "了不起的"] },
+  { text: "frustrated", cat: "常用形容词", translations: ["沮丧的", "挫败的", "失意的"] },
+  { text: "generous", cat: "常用形容词", translations: ["慷慨的", "大方的", "宽厚的"] },
+  { text: "grateful", cat: "常用形容词", translations: ["感激的", "感谢的", "令人愉快的"] },
+  { text: "honest", cat: "常用形容词", translations: ["诚实的", "正直的", "坦诚的"] },
+  { text: "impressive", cat: "常用形容词", translations: ["令人印象深刻的", "感人的", "令人钦佩的"] },
+  { text: "incredible", cat: "常用形容词", translations: ["难以置信的", "极好的", "惊人的"] },
+  { text: "independent", cat: "常用形容词", translations: ["独立的", "自主的", "自立的"] },
+  { text: "necessary", cat: "常用形容词", translations: ["必要的", "必需的", "必然的"] },
+  { text: "particular", cat: "常用形容词", translations: ["特别的", "特定的", "挑剔的"] },
+  { text: "patient", cat: "常用形容词", translations: ["耐心的", "有耐心的", "忍耐的"] },
+  { text: "pleasant", cat: "常用形容词", translations: ["愉快的", "宜人的", "令人舒适的"] },
+  { text: "reasonable", cat: "常用形容词", translations: ["合理的", "适度的", "讲道理的"] },
+  { text: "reliable", cat: "常用形容词", translations: ["可靠的", "可信赖的", "可依靠的"] },
+  { text: "responsible", cat: "常用形容词", translations: ["负责的", "有责任感的", "尽责的"] },
+  { text: "ridiculous", cat: "常用形容词", translations: ["荒谬的", "可笑的", "荒唐的"] },
+  { text: "sensitive", cat: "常用形容词", translations: ["敏感的", "易受影响的", "灵敏的"] },
+  { text: "significant", cat: "常用形容词", translations: ["重要的", "有意义的", "显著的"] },
+  { text: "specific", cat: "常用形容词", translations: ["具体的", "特定的", "明确的"] },
+  { text: "successful", cat: "常用形容词", translations: ["成功的", "有成效的", "发达的"] },
+  { text: "terrible", cat: "常用形容词", translations: ["糟糕的", "可怕的", "极度的"] },
+  { text: "thoughtful", cat: "常用形容词", translations: ["体贴的", "周到的", "深思的"] },
+  { text: "unique", cat: "常用形容词", translations: ["独特的", "唯一的", "与众不同的"] },
+  { text: "valuable", cat: "常用形容词", translations: ["有价值的", "宝贵的", "重要的"] },
+  { text: "various", cat: "常用形容词", translations: ["各种各样的", "多样的", "不同的"] },
+  { text: "worthwhile", cat: "常用形容词", translations: ["值得的", "有价值的", "有益的"] },
+  { text: "sophisticated", cat: "常用形容词", translations: ["复杂精密的", "老练的", "高雅的"] },
+  { text: "straightforward", cat: "常用形容词", translations: ["直接的", "简单明了的", "坦率的"] },
+
+  // ---- 常用名词 ----
+  { text: "advantage", cat: "常用名词", translations: ["优势", "有利条件", "好处"] },
+  { text: "advice", cat: "常用名词", translations: ["建议", "意见", "忠告"] },
+  { text: "alternative", cat: "常用名词", translations: ["替代方案", "选择", "备选"] },
+  { text: "anxiety", cat: "常用名词", translations: ["焦虑", "忧虑", "不安"] },
+  { text: "atmosphere", cat: "常用名词", translations: ["氛围", "气氛", "大气"] },
+  { text: "attitude", cat: "常用名词", translations: ["态度", "看法", "姿态"] },
+  { text: "behavior", cat: "常用名词", translations: ["行为", "举止", "表现"] },
+  { text: "boundary", cat: "常用名词", translations: ["边界", "界限", "范围"] },
+  { text: "budget", cat: "常用名词", translations: ["预算", "经费", "预算案"] },
+  { text: "challenge", cat: "常用名词", translations: ["挑战", "质疑", "艰巨任务"] },
+  { text: "colleague", cat: "常用名词", translations: ["同事", "同僚", "同行"] },
+  { text: "confidence", cat: "常用名词", translations: ["信心", "自信", "信任"] },
+  { text: "consequence", cat: "常用名词", translations: ["后果", "结果", "重要性"] },
+  { text: "curiosity", cat: "常用名词", translations: ["好奇心", "求知欲", "珍品"] },
+  { text: "deadline", cat: "常用名词", translations: ["截止日期", "最后期限", "死线"] },
+  { text: "determination", cat: "常用名词", translations: ["决心", "坚定", "决定"] },
+  { text: "disappointment", cat: "常用名词", translations: ["失望", "沮丧", "扫兴"] },
+  { text: "environment", cat: "常用名词", translations: ["环境", "周围", "条件"] },
+  { text: "experience", cat: "常用名词", translations: ["经验", "经历", "体验"] },
+  { text: "feedback", cat: "常用名词", translations: ["反馈", "回复", "意见"] },
+  { text: "impression", cat: "常用名词", translations: ["印象", "感想", "效果"] },
+  { text: "improvement", cat: "常用名词", translations: ["改进", "改善", "提高"] },
+  { text: "independence", cat: "常用名词", translations: ["独立", "自主", "自立"] },
+  { text: "influence", cat: "常用名词", translations: ["影响", "势力", "影响力"] },
+  { text: "knowledge", cat: "常用名词", translations: ["知识", "学识", "了解"] },
+  { text: "opportunity", cat: "常用名词", translations: ["机会", "时机", "机遇"] },
+  { text: "patience", cat: "常用名词", translations: ["耐心", "忍耐", "毅力"] },
+  { text: "permission", cat: "常用名词", translations: ["许可", "允许", "同意"] },
+  { text: "personality", cat: "常用名词", translations: ["个性", "人格", "性格"] },
+  { text: "perspective", cat: "常用名词", translations: ["视角", "观点", "透视"] },
+  { text: "preference", cat: "常用名词", translations: ["偏好", "偏爱", "优先"] },
+  { text: "priority", cat: "常用名词", translations: ["优先", "重点", "优先权"] },
+  { text: "relationship", cat: "常用名词", translations: ["关系", "联系", "感情"] },
+  { text: "reputation", cat: "常用名词", translations: ["声誉", "名声", "名誉"] },
+  { text: "responsibility", cat: "常用名词", translations: ["责任", "职责", "义务"] },
+  { text: "schedule", cat: "常用名词", translations: ["日程", "时间表", "计划"] },
+  { text: "solution", cat: "常用名词", translations: ["解决方案", "解决办法", "溶液"] },
+  { text: "strategy", cat: "常用名词", translations: ["策略", "战略", "对策"] },
+  { text: "struggle", cat: "常用名词", translations: ["挣扎", "斗争", "努力"] },
+  { text: "suggestion", cat: "常用名词", translations: ["建议", "提议", "暗示"] },
+  { text: "sympathy", cat: "常用名词", translations: ["同情", "共鸣", "慰问"] },
+  { text: "wisdom", cat: "常用名词", translations: ["智慧", "明智", "才智"] },
+  { text: "appointment", cat: "常用名词", translations: ["预约", "任命", "约会"] },
+
+  // ---- 职场商务 ----
+  { text: "accomplish", cat: "职场商务", translations: ["完成", "实现", "达成"] },
+  { text: "approach", cat: "职场商务", translations: ["方法", "接近", "处理"] },
+  { text: "communicate", cat: "职场商务", translations: ["沟通", "交流", "传达"] },
+  { text: "concentrate", cat: "职场商务", translations: ["集中", "专注", "专心"] },
+  { text: "demonstrate", cat: "职场商务", translations: ["展示", "演示", "证明"] },
+  { text: "determine", cat: "职场商务", translations: ["确定", "决定", "测定"] },
+  { text: "establish", cat: "职场商务", translations: ["建立", "设立", "确立"] },
+  { text: "guarantee", cat: "职场商务", translations: ["保证", "担保", "确保"] },
+  { text: "handle", cat: "职场商务", translations: ["处理", "应对", "管理"] },
+  { text: "manage", cat: "职场商务", translations: ["管理", "经营", "应对"] },
+  { text: "negotiate", cat: "职场商务", translations: ["谈判", "协商", "交涉"] },
+  { text: "participate", cat: "职场商务", translations: ["参与", "参加", "加入"] },
+  { text: "perform", cat: "职场商务", translations: ["执行", "表演", "表现"] },
+  { text: "present", cat: "职场商务", translations: ["展示", "呈现", "提交"] },
+  { text: "promote", cat: "职场商务", translations: ["推广", "促进", "晋升"] },
+  { text: "provide", cat: "职场商务", translations: ["提供", "供应", "给予"] },
+  { text: "recognize", cat: "职场商务", translations: ["认出", "认可", "承认"] },
+  { text: "assume", cat: "职场商务", translations: ["假设", "承担", "就职"] },
+  { text: "commit", cat: "职场商务", translations: ["承诺", "致力于", "犯(罪)"] },
+  { text: "situation", cat: "职场商务", translations: ["情况", "形势", "局面"] },
+];
+
+// ================================================================
+// DATA: Phrase Bank (120+ phrases)
+// ================================================================
+const phraseBank = [
+  // ---- 问候 ----
+  { text: "How is everything going with you these days?", translation: "你最近一切都还好吗？" },
+  { text: "Long time no see! How have you been?", translation: "好久不见！你最近怎么样？" },
+  { text: "It's a pleasure to meet you.", translation: "很高兴见到你。" },
+  { text: "What have you been up to lately?", translation: "你最近在忙什么？" },
+  { text: "I hope you're having a wonderful day.", translation: "希望你今天过得愉快。" },
+  { text: "Nice to see you again after all this time.", translation: "过了这么久再次见到你真好。" },
+  { text: "How are things going at work?", translation: "工作进展如何？" },
+  { text: "I'm glad we finally got a chance to catch up.", translation: "很高兴我们终于有机会聊聊近况。" },
+  { text: "Hope everything is going well with your family.", translation: "希望你家里一切都好。" },
+  { text: "It's been way too long since we last talked.", translation: "我们上次聊天已经很久了。" },
+
+  // ---- 日常对话 ----
+  { text: "Could you please do me a favor?", translation: "你能帮我一个忙吗？" },
+  { text: "I'll be there in just a few minutes.", translation: "我几分钟就到。" },
+  { text: "That sounds like a great idea!", translation: "听起来是个好主意！" },
+  { text: "I'm sorry, I didn't mean to interrupt.", translation: "抱歉，我不是有意打断的。" },
+  { text: "Let me know if you need anything.", translation: "如果你需要什么就告诉我。" },
+  { text: "I really appreciate all your help.", translation: "非常感谢你所有的帮助。" },
+  { text: "What do you feel like doing today?", translation: "你今天想做什么？" },
+  { text: "I'll take care of it right away.", translation: "我马上处理。" },
+  { text: "Don't worry about it, everything will be fine.", translation: "别担心，一切都会好起来的。" },
+  { text: "Can I get back to you on that?", translation: "我稍后回复你好吗？" },
+  { text: "I didn't quite catch what you said.", translation: "我没太听清你说什么。" },
+  { text: "Let's keep in touch and grab coffee soon.", translation: "我们保持联系，改天一起喝咖啡。" },
+  { text: "That's exactly what I was thinking.", translation: "这正是我所想的。" },
+  { text: "I'm running a bit late, sorry about that.", translation: "我有点晚了，抱歉。" },
+  { text: "Could you please speak a little slower?", translation: "你能说慢一点吗？" },
+  { text: "I have no idea what you're talking about.", translation: "我不知道你在说什么。" },
+  { text: "Would you like to join us for dinner?", translation: "你愿意和我们一起吃晚饭吗？" },
+  { text: "I totally understand where you're coming from.", translation: "我完全理解你的立场。" },
+  { text: "Let me think about it for a moment.", translation: "让我考虑一下。" },
+  { text: "That's not what I meant at all.", translation: "那完全不是我的意思。" },
+  { text: "Can you show me how to use this?", translation: "你能教我如何使用这个吗？" },
+  { text: "I was just about to call you.", translation: "我正要给你打电话。" },
+  { text: "What are your plans for the weekend?", translation: "你周末有什么计划？" },
+  { text: "I can't believe my eyes!", translation: "我简直不敢相信自己的眼睛！" },
+  { text: "Let's take a break and grab a bite to eat.", translation: "我们休息一下，吃点东西吧。" },
+  { text: "It's up to you, whatever you prefer.", translation: "由你决定，你喜欢什么都可以。" },
+  { text: "I'll be right back, don't go anywhere.", translation: "我马上回来，别走开。" },
+  { text: "That reminds me of something important.", translation: "那让我想起了一件重要的事。" },
+  { text: "Could we please change the subject?", translation: "我们能换个话题吗？" },
+  { text: "I've been meaning to ask you something.", translation: "我一直想问你一件事。" },
+  { text: "There's something I need to tell you.", translation: "有件事我需要告诉你。" },
+  { text: "Sorry, I got carried away talking about this.", translation: "抱歉，我说这个说得太投入了。" },
+  { text: "I'll figure it out on my own, thanks.", translation: "我自己能搞定，谢谢。" },
+  { text: "That's a really good point, I hadn't thought of that.", translation: "这是个很好的观点，我之前没想到。" },
+  { text: "Let's call it a day and continue tomorrow.", translation: "今天就到这里，明天继续。" },
+
+  // ---- 表达感受 ----
+  { text: "I'm feeling really excited about this opportunity.", translation: "我对这个机会感到非常兴奋。" },
+  { text: "It's been a really long and exhausting day.", translation: "今天真是又长又累的一天。" },
+  { text: "I'm so relieved that everything worked out.", translation: "一切顺利，我松了一口气。" },
+  { text: "To be honest, I'm a little bit nervous.", translation: "说实话，我有点紧张。" },
+  { text: "I couldn't be happier with the result.", translation: "我对结果再满意不过了。" },
+  { text: "I'm feeling a bit under the weather today.", translation: "我今天身体有点不舒服。" },
+  { text: "It is really frustrating when things don't go as planned.", translation: "事情不如计划进行时真的很令人沮丧。" },
+  { text: "I'm over the moon about the good news!", translation: "听到这个好消息我太高兴了！" },
+  { text: "I feel a bit overwhelmed by all the work.", translation: "这些工作让我有点不知所措。" },
+  { text: "I'm grateful for everything you've done for me.", translation: "我感谢你为我所做的一切。" },
+  { text: "It breaks my heart to see you like this.", translation: "看到你这样我很心痛。" },
+  { text: "I'm in a really good mood today for some reason.", translation: "不知道为什么，我今天心情特别好。" },
+
+  // ---- 提供与请求 ----
+  { text: "Is there anything I can help you with?", translation: "有什么我可以帮你的吗？" },
+  { text: "Would you like me to give you a hand?", translation: "你需要我帮忙吗？" },
+  { text: "Could I possibly ask you for a small favor?", translation: "我能请你帮个小忙吗？" },
+  { text: "I'd be happy to help in any way I can.", translation: "我很乐意尽我所能提供帮助。" },
+  { text: "If you ever need anything, don't hesitate to ask.", translation: "如果你需要什么，尽管开口。" },
+  { text: "Could you please pass me the salt?", translation: "你能把盐递给我吗？" },
+  { text: "Would you mind helping me carry this?", translation: "你介意帮我搬一下这个吗？" },
+
+  // ---- 意见与讨论 ----
+  { text: "In my opinion, I think we should wait.", translation: "在我看来，我觉得我们应该等待。" },
+  { text: "I completely agree with what you said.", translation: "我完全同意你所说的。" },
+  { text: "I see your point, but I have a different view.", translation: "我明白你的意思，但我有不同看法。" },
+  { text: "That's an interesting perspective, I hadn't considered that.", translation: "这是一个有趣的视角，我之前没想到。" },
+  { text: "I'm not sure I agree with you on that.", translation: "我不确定我是否同意你的看法。" },
+  { text: "Let's agree to disagree on this matter.", translation: "我们求同存异吧。" },
+  { text: "Could you elaborate on what you mean?", translation: "你能详细说明一下你的意思吗？" },
+  { text: "I think we need to look at this from another angle.", translation: "我觉得我们需要从另一个角度来看这个问题。" },
+  { text: "The main issue here is that we don't have enough information.", translation: "主要问题是我们没有足够的信息。" },
+  { text: "I'd like to add something to what was just said.", translation: "我想对刚才说的补充一点。" },
+
+  // ---- 旅行与外出 ----
+  { text: "Excuse me, could you tell me how to get to the station?", translation: "打扰一下，你能告诉我去车站怎么走吗？" },
+  { text: "I'd like to book a room for two nights, please.", translation: "我想预订一个房间，住两晚。" },
+  { text: "Is there a good restaurant nearby that you recommend?", translation: "附近有你推荐的好餐厅吗？" },
+  { text: "How much does a round-trip ticket cost?", translation: "往返票多少钱？" },
+  { text: "I'm afraid we're lost, could you help us find the way?", translation: "恐怕我们迷路了，你能帮我们找到路吗？" },
+  { text: "What time does the next flight to New York depart?", translation: "下一班去纽约的航班几点起飞？" },
+  { text: "Could I have a window seat, please?", translation: "我能要一个靠窗的座位吗？" },
+  { text: "I need to check in for my flight.", translation: "我需要办理登机手续。" },
+  { text: "Is there a shuttle bus from the airport to the hotel?", translation: "有从机场到酒店的班车吗？" },
+  { text: "What's the best way to get around the city?", translation: "游览这座城市最好的方式是什么？" },
+
+  // ---- 工作与职场 ----
+  { text: "I'm working on a new project at the moment.", translation: "我目前正在做一个新项目。" },
+  { text: "Could you please review my report before I submit it?", translation: "你能在我提交之前帮我看一下我的报告吗？" },
+  { text: "We need to meet the deadline by the end of this month.", translation: "我们必须在月底前完成截止日期。" },
+  { text: "I'd like to schedule a meeting for next Tuesday.", translation: "我想安排下周二开个会。" },
+  { text: "Let me check my calendar and get back to you.", translation: "让我查一下日程表再回复你。" },
+  { text: "I really enjoy working with such a great team.", translation: "我真的很喜欢和这么棒的团队一起工作。" },
+  { text: "Could you please send me the updated file?", translation: "你能把更新后的文件发给我吗？" },
+  { text: "I think we should prioritize this task first.", translation: "我觉得我们应该优先处理这个任务。" },
+  { text: "Thank you for your hard work on this project.", translation: "感谢你在这个项目上的辛勤付出。" },
+  { text: "Let me know if you have any questions about the proposal.", translation: "如果你对这个提案有任何问题请告诉我。" },
+
+  // ---- 电话与沟通 ----
+  { text: "Hello, this is John speaking. How can I help you?", translation: "你好，我是约翰。有什么可以帮你的？" },
+  { text: "I'm sorry, but the line is busy right now.", translation: "抱歉，现在电话占线。" },
+  { text: "Could you please hold on for a moment?", translation: "请稍等一会儿好吗？" },
+  { text: "I'll make sure to pass on your message.", translation: "我一定会转达你的留言。" },
+  { text: "Could you please speak up a little? I can't hear you well.", translation: "你能大点声吗？我听不太清楚。" },
+  { text: "Let me transfer you to the person in charge.", translation: "让我帮你转接给负责人。" },
+
+  // ---- 表达不确定 ----
+  { text: "I'm not entirely sure about that.", translation: "我不太确定那一点。" },
+  { text: "It depends on how things work out.", translation: "这取决于事情进展如何。" },
+  { text: "I can't really say for certain at this point.", translation: "我现在还不能完全确定。" },
+  { text: "There's a possibility that I might be late.", translation: "我有可能会迟到。" },
+  { text: "I guess we'll just have to wait and see.", translation: "我想我们只能拭目以待了。" },
+  { text: "I'm not sure if I can make it to the party.", translation: "我不确定我能否去参加聚会。" },
+
+  // ---- 日常对话补充 ----
+  { text: "I can't wait to see you again!", translation: "我等不及再见到你了！" },
+  { text: "It's been a pleasure talking to you.", translation: "和你聊天很愉快。" },
+  { text: "Make yourself at home.", translation: "别客气，就像在自己家一样。" },
+  { text: "I owe you one, thanks a lot!", translation: "我欠你一个人情，非常感谢！" },
+
+  // ---- 鼓励与祝福 ----
+  { text: "You can do it! I believe in you!", translation: "你能做到的！我相信你！" },
+  { text: "Keep up the great work, you're doing amazing!", translation: "继续加油，你做得太棒了！" },
+  { text: "Don't give up, you're almost there!", translation: "别放弃，你就快成功了！" },
+  { text: "I wish you all the best in your new job.", translation: "祝你在新工作中一切顺利。" },
+  { text: "Congratulations on your well-deserved success!", translation: "祝贺你取得了当之无愧的成功！" },
+  { text: "Sending you my best wishes for a speedy recovery.", translation: "送上我最美好的祝愿，祝你早日康复。" },
+  { text: "You have what it takes to succeed.", translation: "你具备成功所需的一切条件。" },
+  { text: "I'm so proud of everything you've accomplished.", translation: "我为你所取得的一切感到骄傲。" },
+  { text: "Good luck with your presentation tomorrow!", translation: "祝你明天的演讲好运！" },
+  { text: "You're making great progress, keep it up!", translation: "你进步很大，继续努力！" },
+];
+
+// ================================================================
+// STATE
+// ================================================================
+let currentItem = null;
+let currentTranslation = '';
+let isPlaying = false;
+let isPaused = false;
+let currentCategory = 'words';
+let history = [];
+let historyIndex = -1;
+let favorites = new Map();
+let totalPlays = 0;
+let favCount = 0;
+let recentItems = [];
+let speakTimer = null;
+let isSpeaking = false;
+
+// Speech state
+let speechRate = 0.8;
+let speakChinese = false;
+let selectedVoiceName = 'auto';
+let englishVoice = null;
+let chineseVoice = null;
+let voicesLoaded = false;
+
+// DOM refs
+const wordDisplay = document.getElementById('wordDisplay');
+const playBtn = document.getElementById('playBtn');
+const prevBtn = document.getElementById('prevBtn');
+const skipBtn = document.getElementById('skipBtn');
+const replayBtn = document.getElementById('replayBtn');
+const favBtn = document.getElementById('favBtn');
+const transPanel = document.getElementById('translationPanel');
+const transContent = document.getElementById('transContent');
+const typeBadge = document.getElementById('typeBadge');
+const typeBadgeText = document.getElementById('typeBadgeText');
+const categoryLabel = document.getElementById('categoryLabel');
+const speedSlider = document.getElementById('speedSlider');
+const speedValue = document.getElementById('speedValue');
+const chineseToggle = document.getElementById('chineseToggle');
+const voiceSelect = document.getElementById('voiceSelect');
+const practiceCount = document.getElementById('practiceCount');
+const favCountEl = document.getElementById('favCount');
+const toast = document.getElementById('toast');
+const voiceWarning = document.getElementById('voiceWarning');
+const voiceWarningText = document.getElementById('voiceWarningText');
+const segBtns = document.querySelectorAll('.seg-btn');
+
+// ================================================================
+// TOAST
+// ================================================================
+function showToast(msg, duration) {
+  duration = duration || 2000;
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toast._hideTimer);
+  toast._hideTimer = setTimeout(() => toast.classList.remove('show'), duration);
+}
+
+// ================================================================
+// INDEXEDDB
+// ================================================================
+function openDb() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('englishvibe', 1);
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains('progress')) {
+        db.createObjectStore('progress', { keyPath: 'text' });
+      }
+      if (!db.objectStoreNames.contains('favorites')) {
+        db.createObjectStore('favorites', { keyPath: 'text' });
+      }
+      if (!db.objectStoreNames.contains('stats')) {
+        db.createObjectStore('stats', { keyPath: 'id' });
+      }
+    };
+    req.onsuccess = (e) => resolve(e.target.result);
+    req.onerror = (e) => reject(e.target.error);
+  });
+}
+
+async function saveProgress(text) {
+  try {
+    const db = await openDb();
+    const tx = db.transaction('progress', 'readwrite');
+    const store = tx.objectStore('progress');
+    const existing = await new Promise((resolve) => {
+      const r = store.get(text);
+      r.onsuccess = () => resolve(r.result);
+      r.onerror = () => resolve(null);
+    });
+    const count = existing ? (existing.count || 0) + 1 : 1;
+    store.put({ text, count, updatedAt: Date.now() });
+    totalPlays++;
+    practiceCount.textContent = totalPlays;
+    updateTotalPlays(totalPlays);
+    // sync to server
+    syncProgressToServer(text, count);
+  } catch (e) {
+    console.warn('IndexedDB saveProgress error:', e);
+  }
+}
+
+async function toggleFavorite(text, isFav) {
+  try {
+    const db = await openDb();
+    const tx = db.transaction('favorites', 'readwrite');
+    const store = tx.objectStore('favorites');
+    if (isFav) {
+      store.put({ text, favoritedAt: Date.now() });
+      favorites.set(text, true);
+      favCount = favorites.size;
+    } else {
+      store.delete(text);
+      favorites.delete(text);
+      favCount = favorites.size;
+    }
+    favCountEl.textContent = favCount;
+    // sync to server
+    syncFavoriteToServer(text, isFav);
+  } catch (e) {
+    console.warn('IndexedDB toggleFavorite error:', e);
+  }
+}
+
+async function loadFavorites() {
+  try {
+    const db = await openDb();
+    const tx = db.transaction('favorites', 'readonly');
+    const store = tx.objectStore('favorites');
+    const all = await new Promise((resolve) => {
+      const r = store.getAll();
+      r.onsuccess = () => resolve(r.result);
+      r.onerror = () => resolve([]);
+    });
+    favorites.clear();
+    all.forEach(item => favorites.set(item.text, true));
+    favCount = favorites.size;
+    favCountEl.textContent = favCount;
+  } catch (e) {
+    console.warn('IndexedDB loadFavorites error:', e);
+  }
+}
+
+async function loadStats() {
+  try {
+    const db = await openDb();
+    const tx = db.transaction('stats', 'readonly');
+    const store = tx.objectStore('stats');
+    const stat = await new Promise((resolve) => {
+      const r = store.get('total');
+      r.onsuccess = () => resolve(r.result);
+      r.onerror = () => resolve(null);
+    });
+    totalPlays = stat ? (stat.count || 0) : 0;
+    practiceCount.textContent = totalPlays;
+  } catch (e) {
+    console.warn('IndexedDB loadStats error:', e);
+  }
+}
+
+async function updateTotalPlays(count) {
+  try {
+    const db = await openDb();
+    const tx = db.transaction('stats', 'readwrite');
+    const store = tx.objectStore('stats');
+    store.put({ id: 'total', count, updatedAt: Date.now() });
+  } catch (e) {
+    console.warn('IndexedDB updateTotalPlays error:', e);
+  }
+}
+
+// ================================================================
+// SERVER SYNC (silent fail)
+// ================================================================
+let userId = 'local-user';
+
+function syncProgressToServer(text, count) {
+  fetch('/api/progress/' + userId, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, count })
+  }).catch(() => {});
+}
+
+function syncFavoriteToServer(text, isFav) {
+  fetch('/api/favorites/' + userId, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, favorited: isFav })
+  }).catch(() => {});
+}
+
+// ================================================================
+// VOICE & SPEECH
+// ================================================================
+function getEnglishVoice() {
+  const all = window.speechSynthesis.getVoices();
+  // 1. Try to find a Google/Enhanced/Premium quality en-US voice
+  const premium = all.find(v =>
+    v.lang.startsWith('en') &&
+    (v.name.includes('Google') || v.name.includes('Enhanced') || v.name.includes('Premium') || v.name.includes('Neural2') || v.name.includes('Wavenet') || v.name.includes('Natural'))
+  );
+  if (premium) return premium;
+  // 2. Try en-US
+  const enUS = all.find(v => v.lang === 'en-US');
+  if (enUS) return enUS;
+  // 3. Try any en-
+  const enAny = all.find(v => v.lang.startsWith('en'));
+  if (enAny) return enAny;
+  return null;
+}
+
+function getChineseVoice() {
+  const all = window.speechSynthesis.getVoices();
+  // Try zh-CN first
+  const zhCN = all.find(v => v.lang === 'zh-CN' || v.lang === 'zh-cn');
+  if (zhCN) return zhCN;
+  // Try zh-
+  const zhAny = all.find(v => v.lang.startsWith('zh'));
+  if (zhAny) return zhAny;
+  return null;
+}
+
+function getUsableVoices() {
+  const all = window.speechSynthesis.getVoices();
+  return all.filter(v => v.lang.startsWith('en'));
+}
+
+function speak(text) {
+  return new Promise((resolve) => {
+    stopSpeech();
+    if (!text) { resolve(); return; }
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = speechRate;
+
+    // Determine voice
+    if (selectedVoiceName === 'auto') {
+      utterance.voice = englishVoice || getEnglishVoice();
+    } else {
+      const all = window.speechSynthesis.getVoices();
+      const found = all.find(v => v.name === selectedVoiceName);
+      utterance.voice = found || englishVoice || getEnglishVoice();
+    }
+
+    // Adjust rate for more natural sound
+    if (text.split(' ').length > 8) {
+      utterance.rate = Math.min(speechRate * 0.95, speechRate);
+    }
+
+    isSpeaking = true;
+    utterance.onend = () => { isSpeaking = false; resolve(); };
+    utterance.onerror = () => { isSpeaking = false; resolve(); };
+    window.speechSynthesis.speak(utterance);
+
+    // Safety timeout
+    setTimeout(() => {
+      if (isSpeaking) { isSpeaking = false; resolve(); }
+    }, Math.max(text.length * 80, 3000));
+  });
+}
+
+function speakChineseTranslation() {
+  return new Promise((resolve) => {
+    let chineseText = '';
+    if (currentItem && currentItem.translations) {
+      // For words, speak only the first meaning
+      chineseText = currentItem.translations[0];
+    } else if (currentItem && currentItem.translation) {
+      // For phrases, clean separators
+      chineseText = currentItem.translation.replace(/[·•]/g, ' ');
+    }
+    if (!chineseText) { resolve(); return; }
+    const utterance = new SpeechSynthesisUtterance(chineseText);
+    utterance.lang = 'zh-CN';
+    utterance.rate = 0.85;
+    const zhVoice = chineseVoice || getChineseVoice();
+    if (zhVoice) utterance.voice = zhVoice;
+    utterance.onend = resolve;
+    utterance.onerror = resolve;
+    window.speechSynthesis.speak(utterance);
+
+    setTimeout(resolve, Math.max(chineseText.length * 100, 2000));
+  });
+}
+
+function stopSpeech() {
+  window.speechSynthesis.cancel();
+  isSpeaking = false;
+}
+
+// ================================================================
+// CORE LOGIC
+// ================================================================
+function getCurrentBank() {
+  if (currentCategory === 'words') return wordBank;
+  if (currentCategory === 'phrases') return phraseBank;
+  // 'all' - merge both
+  const words = wordBank.map(w => ({ ...w, _type: 'word' }));
+  const phrases = phraseBank.map(p => ({ ...p, _type: 'phrase' }));
+  return [...words, ...phrases];
+}
+
+function isPhrase(item) {
+  return item && (item.translation !== undefined || item._type === 'phrase');
+}
+
+function getRandomItem() {
+  const bank = getCurrentBank();
+  if (!bank || bank.length === 0) return null;
+
+  // Filter out recent items to avoid immediate repeats
+  let candidates = bank;
+  if (recentItems.length >= Math.min(bank.length, 10)) {
+    const recentSet = new Set(recentItems.slice(-10));
+    const filtered = bank.filter(item => !recentSet.has(item.text));
+    if (filtered.length > 0) candidates = filtered;
+  }
+
+  const idx = Math.floor(Math.random() * candidates.length);
+  const selected = candidates[idx];
+
+  // Add to recent (limit to 20)
+  recentItems.push(selected.text);
+  if (recentItems.length > 20) recentItems.shift();
+
+  return selected;
+}
+
+function updateBadge(item) {
+  if (!item) return;
+  const isPh = isPhrase(item);
+  typeBadge.className = 'type-badge ' + (isPh ? 'phrase' : 'word');
+  typeBadgeText.textContent = isPh ? '对话' : '单词';
+
+  if (isPh) {
+    // For phrases, derive category from context or just show "口语"
+    categoryLabel.textContent = '实用口语';
+  } else {
+    categoryLabel.textContent = item.cat || '词汇';
+  }
+}
+
+function updateDisplay(item) {
+  if (!item) return;
+  wordDisplay.textContent = item.text;
+  checkFavorite(item);
+}
+
+function showTranslation(item) {
+  if (!item) return;
+  if (isPhrase(item)) {
+    transContent.textContent = item.translation || '';
+  } else {
+    transContent.textContent = item.translations ? item.translations.join(' · ') : '';
+  }
+}
+
+function checkFavorite(item) {
+  if (!item) return;
+  const isFav = favorites.has(item.text);
+  favBtn.classList.toggle('active', isFav);
+  favBtn.setAttribute('aria-label', isFav ? '取消收藏' : '收藏');
+  favBtn.title = isFav ? '取消收藏' : '收藏';
+}
+
+async function playCurrent() {
+  if (!currentItem) return;
+
+  // Show item
+  updateDisplay(currentItem);
+  updateBadge(currentItem);
+
+  // Hide translation initially
+  transPanel.classList.remove('visible');
+
+  // Speak English
+  isPlaying = true;
+  isPaused = false;
+  playBtn.classList.add('playing');
+  playBtn.setAttribute('aria-label', '暂停');
+
+  await speak(currentItem.text);
+
+  // If not paused/cancelled, show translation and speak Chinese
+  if (isPlaying && !isPaused) {
+    showTranslation(currentItem);
+    transPanel.classList.add('visible');
+
+    if (speakChinese) {
+      await speakChineseTranslation();
+    }
+
+    // Save progress
+    if (currentItem.text) {
+      saveProgress(currentItem.text);
+    }
+
+    // Auto-advance after delay
+    if (isPlaying && !isPaused) {
+      speakTimer = setTimeout(() => {
+        if (isPlaying && !isPaused) {
+          skip();
+        }
+      }, 2500);
+    }
+  }
+}
+
+function pickAndPlay() {
+  const item = getRandomItem();
+  if (!item) {
+    showToast('当前分类暂无内容，请切换分类');
+    return;
+  }
+  currentItem = item;
+
+  // Add to history
+  history.push(item);
+  historyIndex = history.length - 1;
+
+  playCurrent();
+}
+
+function pause() {
+  isPaused = true;
+  isPlaying = false;
+  stopSpeech();
+  playBtn.classList.remove('playing');
+  playBtn.setAttribute('aria-label', '播放');
+  clearTimeout(speakTimer);
+
+  // Show translation
+  if (currentItem) {
+    showTranslation(currentItem);
+    transPanel.classList.add('visible');
+  }
+}
+
+function resume() {
+  if (!currentItem) return;
+  isPaused = false;
+  isPlaying = true;
+  playBtn.classList.add('playing');
+  playBtn.setAttribute('aria-label', '暂停');
+
+  // Hide translation and continue cycle
+  transPanel.classList.remove('visible');
+  if (speakChinese) {
+    setTimeout(() => {
+      if (isPlaying && !isPaused) {
+        speakChineseTranslation().then(() => {
+          if (isPlaying && !isPaused) {
+            speakTimer = setTimeout(skip, 2000);
+          }
+        });
+      }
+    }, 500);
+  } else {
+    speakTimer = setTimeout(skip, 2000);
+  }
+}
+
+function skip() {
+  if (isPlaying) {
+    stopSpeech();
+    clearTimeout(speakTimer);
+  }
+  isPaused = false;
+  isPlaying = false;
+  playBtn.classList.remove('playing');
+  playBtn.setAttribute('aria-label', '播放');
+  pickAndPlay();
+}
+
+function replay() {
+  if (!currentItem) return;
+  stopSpeech();
+  clearTimeout(speakTimer);
+  transPanel.classList.remove('visible');
+  isPaused = false;
+  isPlaying = false;
+  playBtn.classList.remove('playing');
+  playBtn.setAttribute('aria-label', '播放');
+  playCurrent();
+}
+
+function goToPrevious() {
+  if (history.length === 0 || historyIndex <= 0) {
+    showToast('没有上一个了');
+    return;
+  }
+  if (isPlaying) {
+    stopSpeech();
+    clearTimeout(speakTimer);
+    isPlaying = false;
+    isPaused = false;
+    playBtn.classList.remove('playing');
+  }
+  historyIndex--;
+  currentItem = history[historyIndex];
+  playCurrent();
+}
+
+// ================================================================
+// VOICE SELECT POPULATE
+// ================================================================
+function populateVoiceSelect() {
+  const voices = getUsableVoices();
+  // Keep "auto" option
+  const currentVal = voiceSelect.value;
+  // Remove old options except "auto"
+  while (voiceSelect.options.length > 1) {
+    voiceSelect.remove(1);
+  }
+  voices.forEach(v => {
+    const opt = document.createElement('option');
+    opt.value = v.name;
+    opt.textContent = v.name + ' (' + v.lang + ')';
+    voiceSelect.appendChild(opt);
+  });
+  // Try to restore selection
+  if (currentVal !== 'auto') {
+    const exists = voices.some(v => v.name === currentVal);
+    if (exists) voiceSelect.value = currentVal;
+    else voiceSelect.value = 'auto';
+  } else {
+     voiceSelect.value = 'auto';
+   }
+   selectedVoiceName = voiceSelect.value;
+ }
+
+// ================================================================
+// EVENT HANDLERS
+// ================================================================
+
+// Play button
+playBtn.addEventListener('click', () => {
+  if (!currentItem) {
+    pickAndPlay();
+    return;
+  }
+  if (isPaused) {
+    resume();
+  } else if (isPlaying) {
+    pause();
+  } else {
+    // Starting fresh
+    pickAndPlay();
+  }
+});
+
+// Skip
+skipBtn.addEventListener('click', skip);
+
+// Replay
+replayBtn.addEventListener('click', replay);
+
+// Previous
+prevBtn.addEventListener('click', goToPrevious);
+
+// Category segmented control
+segBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    segBtns.forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-selected', 'false');
+    });
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+    const cat = btn.getAttribute('data-category');
+    if (cat !== currentCategory) {
+      currentCategory = cat;
+      // Clear recent items when switching categories
+      recentItems = [];
+      history = [];
+      historyIndex = -1;
+      stopSpeech();
+      clearTimeout(speakTimer);
+      isPlaying = false;
+      isPaused = false;
+      playBtn.classList.remove('playing');
+      playBtn.setAttribute('aria-label', '播放');
+      transPanel.classList.remove('visible');
+      currentItem = null;
+      wordDisplay.textContent = getCurrentBank().length > 0 ? '已切换，点击播放' : '暂无内容';
+      showToast('已切换至 ' + btn.textContent + ' 模式');
+    }
+  });
+});
+
+// Speed slider
+speedSlider.addEventListener('input', (e) => {
+  speechRate = parseFloat(e.target.value);
+  speedValue.textContent = speechRate.toFixed(1) + 'x';
+  localStorage.setItem('ev_speed', speechRate);
+});
+
+// Chinese toggle
+chineseToggle.addEventListener('change', (e) => {
+  speakChinese = e.target.checked;
+  localStorage.setItem('ev_chinese', speakChinese);
+  chineseToggle.setAttribute('aria-label', speakChinese ? '中文播报已开启' : '中文播报已关闭');
+});
+
+// Voice select
+voiceSelect.addEventListener('change', (e) => {
+  selectedVoiceName = e.target.value;
+  localStorage.setItem('ev_voice', selectedVoiceName);
+});
+
+// Favorite button
+favBtn.addEventListener('click', () => {
+  if (!currentItem) {
+    showToast('请先播放内容');
+    return;
+  }
+  const text = currentItem.text;
+  const isCurrentlyFav = favorites.has(text);
+  const newFavState = !isCurrentlyFav;
+  favBtn.classList.toggle('active', newFavState);
+  favBtn.setAttribute('aria-label', newFavState ? '取消收藏' : '收藏');
+  favBtn.title = newFavState ? '取消收藏' : '收藏';
+  toggleFavorite(text, newFavState);
+  showToast(newFavState ? '已收藏' : '已取消收藏');
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  // Ignore if user is typing in an input/select
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
+
+  switch (e.code) {
+    case 'Space':
+      e.preventDefault();
+      playBtn.click();
+      break;
+    case 'ArrowRight':
+      e.preventDefault();
+      skipBtn.click();
+      break;
+    case 'ArrowLeft':
+      e.preventDefault();
+      prevBtn.click();
+      break;
+    case 'KeyR':
+      e.preventDefault();
+      replayBtn.click();
+      break;
+  }
+});
+
+// Visibility change - pause when tab hidden
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    if (isPlaying && !isPaused) {
+      pause();
+    }
+  }
+});
+
+// ================================================================
+// INITIALIZATION
+// ================================================================
+
+// Load saved preferences
+function loadPreferences() {
+  const savedSpeed = localStorage.getItem('ev_speed');
+  if (savedSpeed !== null) {
+    speechRate = parseFloat(savedSpeed);
+    speedSlider.value = speechRate;
+    speedValue.textContent = speechRate.toFixed(1) + 'x';
+  }
+  const savedChinese = localStorage.getItem('ev_chinese');
+  if (savedChinese !== null) {
+    speakChinese = savedChinese === 'true';
+    chineseToggle.checked = speakChinese;
+    chineseToggle.setAttribute('aria-label', speakChinese ? '中文播报已开启' : '中文播报已关闭');
+  }
+  const savedVoice = localStorage.getItem('ev_voice');
+  if (savedVoice !== null) {
+    selectedVoiceName = savedVoice;
+  }
+}
+
+// Initialize voices
+function initVoices() {
+  const voices = window.speechSynthesis.getVoices();
+  if (voices.length > 0) {
+    englishVoice = getEnglishVoice();
+    chineseVoice = getChineseVoice();
+    voicesLoaded = true;
+    voiceWarning.classList.remove('visible');
+    populateVoiceSelect();
+    // Restore voice selection after populate
+    if (selectedVoiceName !== 'auto') {
+      const exists = voices.some(v => v.name === selectedVoiceName);
+      if (exists) voiceSelect.value = selectedVoiceName;
+    }
+  } else {
+    // Wait for voices
+    voiceWarning.classList.add('visible');
+    voiceWarningText.textContent = '语音系统加载中，请稍候...';
+  }
+}
+
+// Voice changed callback
+window.speechSynthesis.onvoiceschanged = () => {
+  initVoices();
+};
+
+// Also try a delayed init for browsers that fire onvoiceschanged late
+setTimeout(() => {
+  if (!voicesLoaded) {
+    initVoices();
+  }
+}, 1000);
+
+// Another fallback
+setTimeout(() => {
+  if (!voicesLoaded) {
+    initVoices();
+  }
+}, 3000);
+
+// Main init
+async function init() {
+  loadPreferences();
+  await loadFavorites();
+  await loadStats();
+  initVoices();
+
+  // Show initial tip
+  const bank = getCurrentBank();
+  wordDisplay.textContent = bank.length > 0 ? '点击播放开始' : '暂无内容，请切换分类';
+
+  // Pre-select first random item
+  const firstItem = getRandomItem();
+  if (firstItem) {
+    currentItem = firstItem;
+    history.push(firstItem);
+    historyIndex = 0;
+    updateBadge(firstItem);
+    updateDisplay(firstItem);
+  }
+
+  // Try server sync
+  fetch('/api/health').then(r => {
+    if (r.ok) {
+      fetch('/api/user/me').then(res => res.json()).then(data => {
+        if (data && data.id) userId = data.id;
+      }).catch(() => {});
+    }
+  }).catch(() => {});
+}
+
+// Start when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+</script>
+</body>
+</html>
